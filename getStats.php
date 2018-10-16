@@ -121,7 +121,7 @@ if (empty($data)) {
     if ($error === false) {
         die(json_encode(array("code" => -1, "data" => $notFound)));
     } else {
-        die(json_encode(array("code"=> -1, "data" => array(), "error" => $error)));
+        die(json_encode(array("code" => -1, "data" => array(), "error" => $error)));
     }
 }
 
@@ -138,12 +138,12 @@ foreach ($idresponse["results"] as $value) {
     $final[] = array_merge($value, array("nickname" => $map[$id]["nickname"], "profile_id" => $id, "platform" => $platform));
 }
 if (empty($notFound)) {
-    print str_replace(":infinite", "", json_encode(
+    print str_replace(":infinite", "",
         json_encode(array(
-            'code' => 0,
-            "data" => $final
-        ))
-    ));
+                'code' => 0,
+                "data" => $final
+            )
+        ));
 } else {
     print str_replace(":infinite", "", json_encode(json_encode(array(
         'code' => -1,
