@@ -65,13 +65,11 @@ function printName($uid)
             "nickname" => $su['nick']
         );
         $data[] = array(
-            "id" => $su['uid'],
             "profile_id" => $su['uid'],
             "nickname" => $su['nick']
         );
     } else {
         $notFound[] = [
-            'id' => $uid,
             "profile_id" => $uid,
             "error" => [
                 "message" => "User not found!"
@@ -90,7 +88,6 @@ function printID($name)
             "nickname" => $su['nick']
         );
         $data[] = array(
-            "id" => $su['uid'],
             "profile_id" => $su['uid'],
             "nickname" => $su['nick']
         );
@@ -263,7 +260,7 @@ $final = array();
 foreach ($idresponse["players"] as $value) {
     $id = $value["profile_id"];
     $final[] = array_merge(($loadProgression == "true" ? getValue($id, $progression) : array()), $value, array(
-        "id" => $id,
+        "profile_id" => $id,
         "nickname" => $map[$id]["nickname"],
         "platform" => $platform,
         "rankInfo" => $ranks[$value["rank"]]
