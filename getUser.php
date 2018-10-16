@@ -1,5 +1,5 @@
 <?php
-include ("config.php");
+include("config.php");
 
 if (empty($_GET)) {
     print "ERROR: Wrong usage";
@@ -31,10 +31,11 @@ if ($loadProgression != "true" && $loadProgression != "false") {
     $loadProgression = $config["default-progression"];
 }
 
-include ("UbiAPI.php");
+include("UbiAPI.php");
 
 $uapi = new UbiAPI($config["ubi-email"], $config["ubi-password"]);
 $data = array();
+$map = array();
 $region = $config["default-region"];
 $season = -1;
 
@@ -59,6 +60,10 @@ function printName($uid)
     global $uapi, $data, $id, $platform, $notFound;
     $su = $uapi->searchUser("byid", $uid, $platform);
     if ($su["error"] != true) {
+        $map[$su['uid']] = array(
+            "profile_id" => $su['uid'],
+            "nickname" => $su['nick']
+        );
         $data[] = array(
             "id" => $su['uid'],
             "profile_id" => $su['uid'],
@@ -80,6 +85,10 @@ function printID($name)
     global $uapi, $data, $id, $platform, $notFound;
     $su = $uapi->searchUser("bynick", $name, $platform);
     if ($su["error"] != true) {
+        $map[$su['uid']] = array(
+            "profile_id" => $su['uid'],
+            "nickname" => $su['nick']
+        );
         $data[] = array(
             "id" => $su['uid'],
             "profile_id" => $su['uid'],
@@ -99,14 +108,13 @@ if (isset($_GET["id"])) {
     $str = $_GET["id"];
     if (strpos($str, ',') !== false) {
         $tocheck = explode(',', $str);
-    }
-    else {
+    } else {
         $tocheck = array(
             $str
         );
     }
 
-    foreach($tocheck as $value) {
+    foreach ($tocheck as $value) {
         printName($value);
     }
 }
@@ -115,14 +123,13 @@ if (isset($_GET["name"])) {
     $str = $_GET["name"];
     if (strpos($str, ',') !== false) {
         $tocheck = explode(',', $str);
-    }
-    else {
+    } else {
         $tocheck = array(
             $str
         );
     }
 
-    foreach($tocheck as $value) {
+    foreach ($tocheck as $value) {
         printID($value);
     }
 }
@@ -133,10 +140,9 @@ if (empty($data)) {
         die(json_encode(array(
             "players" => $notFound
         )));
-    }
-    else {
+    } else {
         die(json_encode(array(
-            "players" => array() ,
+            "players" => array(),
             "error" => $error
         )));
     }
@@ -144,7 +150,7 @@ if (empty($data)) {
 
 function getValue($user, $progression)
 {
-    foreach($progression as $usera) {
+    foreach ($progression as $usera) {
         if ($usera["profile_id"] == $user) {
             return $usera;
         }
@@ -155,15 +161,15 @@ function getValue($user, $progression)
 
 $ids = "";
 
-foreach($data as $value) {
+foreach ($data as $value) {
     $ids = $ids . "," . $value["profile_id"];
 }
 
 $ids = substr($ids, 1);
-$idresponse = json_decode($uapi->getRanking($ids, $season, $region, $platform) , true);
+$idresponse = json_decode($uapi->getRanking($ids, $season, $region, $platform), true);
 
 if ($loadProgression == "true") {
-    $progression = json_decode($uapi->getProgression($ids, $platform) , true) ["player_profiles"];
+    $progression = json_decode($uapi->getProgression($ids, $platform), true) ["player_profiles"];
 }
 
 $ranks = json_decode('{
@@ -254,11 +260,11 @@ $ranks = json_decode('{
 }', true);
 $final = array();
 
-foreach($idresponse["players"] as $value) {
+foreach ($idresponse["players"] as $value) {
     $id = $value["profile_id"];
-    $final[] = array_merge(($loadProgression == "true" ? getValue($id, $progression) : array()) , $value, array(
+    $final[] = array_merge(($loadProgression == "true" ? getValue($id, $progression) : array()), $value, array(
         "id" => $id,
-        "nickname" => $data[$id]["nickname"],
+        "nickname" => $map[$id]["nickname"],
         "platform" => $platform,
         "rankInfo" => $ranks[$value["rank"]]
     ));
