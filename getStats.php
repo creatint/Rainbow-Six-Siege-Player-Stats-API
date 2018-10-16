@@ -47,7 +47,7 @@ $notFound = [];
 
 function printName($uid)
 {
-    global $uapi, $data, $id, $platform, $notFound;
+    global $uapi, $data, $map, $id, $platform, $notFound;
     $su = $uapi->searchUser("byid", $uid, $platform);
     if ($su["error"] != true) {
         $map[$su['uid']] = array(
@@ -70,7 +70,7 @@ function printName($uid)
 
 function printID($name)
 {
-    global $uapi, $data, $id, $platform, $notFound;
+    global $uapi, $data, $map, $id, $platform, $notFound;
     $su = $uapi->searchUser("bynick", $name, $platform);
     if ($su["error"] != true) {
         $map[$su['uid']] = array(
@@ -119,9 +119,9 @@ if (isset($_GET["name"])) {
 if (empty($data)) {
     $error = $uapi->getErrorMessage();
     if ($error === false) {
-        die(json_encode(array("players" => $notFound)));
+        die(json_encode(array("code" => -1, "data" => $notFound)));
     } else {
-        die(json_encode(array("players" => array(), "error" => $error)));
+        die(json_encode(array("code"=> -1, "data" => array(), "error" => $error)));
     }
 }
 
