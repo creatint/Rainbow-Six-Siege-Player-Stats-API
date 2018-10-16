@@ -135,7 +135,7 @@ $idresponse = json_decode($uapi->getStats($ids, $stats, $platform), true);
 $final = array();
 foreach ($idresponse["results"] as $value) {
     $id = array_search($value, $idresponse["results"]);
-    $final[] = array_merge($value, array("nickname" => $data[$id]["nickname"], "profile_id" => $id, "platform" => $platform));
+    $final[] = array_merge($value, array("nickname" => $map[$id]["nickname"], "profile_id" => $id, "platform" => $platform));
 }
 if (empty($notFound)) {
     print str_replace(":infinite", "", json_encode(
