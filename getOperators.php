@@ -27,6 +27,7 @@ include("UbiAPI.php");
 $uapi = new UbiAPI($config["ubi-email"],$config["ubi-password"]);
 
 $data = array();
+$map = array();
 
 $platform = $config["default-platform"];
 if(isset($_GET['platform'])) {
@@ -40,12 +41,16 @@ function printName($uid)
 	global $uapi, $data, $id, $platform, $notFound;
 	$su = $uapi->searchUser("byid", $uid, $platform);
 	if ($su["error"] != true) {
-		$data[$su['uid']] = array(
+        $map[$su['uid']] = array(
+            "profile_id" => $su['uid'],
+            "nickname" => $su['nick']
+        );
+		$data[] = array(
 			"profile_id" => $su['uid'],
 			"nickname" => $su['nick']
 		);
 	} else {
-		$notFound[$uid] = [
+		$notFound[] = [
 			"profile_id" => $uid,
 			"error" => [
 				"message" => "User not found!"
@@ -59,12 +64,16 @@ function printID($name)
 	global $uapi, $data, $id, $platform, $notFound;
 	$su = $uapi->searchUser("bynick", $name, $platform);
 	if ($su["error"] != true) {
-		$data[$su['uid']] = array(
+        $map[$su['uid']] = array(
+            "profile_id" => $su['uid'],
+            "nickname" => $su['nick']
+        );
+		$data[] = array(
 			"profile_id" => $su['uid'],
 			"nickname" => $su['nick']
 		);
 	} else {
-		$notFound[$name] = [
+		$notFound[] = [
 			"nickname" => $name,
 			"error" => [
 				"message" => "User not found!"
@@ -101,9 +110,9 @@ if(isset($_GET["name"])) {
 if(empty($data)) {
 	$error = $uapi->getErrorMessage();
 	if($error === false) {
-		die(json_encode(array("players" => $notFound)));
+		die(json_encode(array("code"=> -1, "data" => $notFound)));
 	}else{
-		die(json_encode(array("players" => array(), "error" => $error)));
+		die(json_encode(array("code"=> -1, "data" => array(), "error" => $error)));
 	}
 }
 
@@ -116,7 +125,7 @@ $ids = substr($ids, 1);
 $idresponse = json_decode($uapi->getOperators($ids, $platform), true);
 $final = array();
 foreach($idresponse as $id=>$value) {
-	$final[$id] = array_merge($value, array("profile_id"=>$id, "nickname"=>$data[$id]["nickname"], "platform" => $platform));
+	$final[] = array_merge($value, array("profile_id"=>$id, "nickname"=>$data[$id]["nickname"], "platform" => $platform));
 }
 
 $operatorArray = array();
@@ -135,5 +144,9 @@ foreach($operators as $operator=>$info) {
 	}
 }
 
-print json_encode(array_merge(array("players" => array_merge($final,$notFound)),array("operators" => $operatorArray)));
+if (empty($notFound)) {
+    print json_encode(array_merge(array("code"=> 0, "data" => $final, "operators" => $operatorArray)));
+} else {
+    print json_encode(array_merge(array("code"=> -1, "data" => array_merge($final,$notFound), "operators" => $operatorArray)));
+}
 ?>
