@@ -125,7 +125,7 @@ $ids = substr($ids, 1);
 $idresponse = json_decode($uapi->getOperators($ids, $platform), true);
 $final = array();
 foreach($idresponse as $id=>$value) {
-	$final[] = array_merge($value, array("profile_id"=>$id, "nickname"=>$data[$id]["nickname"], "platform" => $platform));
+	$final[] = array_merge($value, array("profile_id"=>$id, "nickname"=>$map[$id]["nickname"], "platform" => $platform));
 }
 
 $operatorArray = array();
