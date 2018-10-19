@@ -142,9 +142,11 @@ foreach ($operators as $operator => $info) {
 
 $final = array();
 foreach ($idresponse as $id => $value) {
-    foreach ( $value as &$player) {
-        $player["operators"] = $operatorArray;
+    foreach ($value as $key => &$player) {
+        if (isset($operatorArray[$key]))
+            $player = array_merge($player, $operatorArray[$key]);
     }
+    unset($player);
     $final[] = $value;
 }
 
