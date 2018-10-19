@@ -142,8 +142,7 @@ foreach ($operators as $operator => $info) {
 
 $final = array();
 foreach ($idresponse as $id => $value) {
-    $value["operators"] = $operatorArray;
-    $final[] = $value;
+    $final[] = array_merge($value, array("operators" => $operatorArray));
 }
 
 if (empty($notFound)) {
