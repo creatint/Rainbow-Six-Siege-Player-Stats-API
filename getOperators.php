@@ -142,13 +142,12 @@ foreach ($operators as $operator => $info) {
 
 $final = array();
 foreach ($idresponse as $id => $value) {
-    $value['operators'] = $operatorArray;
     $final[] = $value;
 }
 
 if (empty($notFound)) {
-    print json_encode(array("code" => 0, "data" => $final));
+    print json_encode(array("code" => 0, "data" => array("players" => $final, "operators" => $operatorArray)));
 } else {
-    print json_encode(array("code" => -1, "data" => array_merge($final, $notFound)));
+    print json_encode(array("code" => -1, "data" => array("players" => array_merge($final, $notFound), "operators" => $operatorArray)));
 }
 ?>
