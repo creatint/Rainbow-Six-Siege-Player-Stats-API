@@ -145,8 +145,8 @@ foreach($operators as $operator=>$info) {
 }
 
 if (empty($notFound)) {
-    print json_encode(array_merge(array("code"=> 0, "data" => array_merge($final, array('operators'=>$operatorArray)))));
+    print json_encode(array_merge(array("code"=> 0, "data" => array_merge($final, $operatorArray))));
 } else {
-    print json_encode(array_merge(array("code"=> -1, "data" => array_merge($final,$notFound, array("operators" => $operatorArray)))));
+    print json_encode(array_merge(array("code"=> -1, "data" => array_merge($final,$notFound, $operatorArray))));
 }
 ?>
