@@ -147,8 +147,8 @@ foreach ($idresponse as $id => $value) {
 }
 
 if (empty($notFound)) {
-    print json_encode(array_merge(array("code" => 0, "data" => $final)));
+    print json_encode(array("code" => 0, "data" => $final));
 } else {
-    print json_encode(array_merge(array("code" => -1, "data" => array_merge($final, $notFound))));
+    print json_encode(array("code" => -1, "data" => array_merge($final, $notFound)));
 }
 ?>
