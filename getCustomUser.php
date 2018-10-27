@@ -46,7 +46,7 @@ if (isset($_GET['season'])) {
 }
 
 if ($season >= 6) {
-    for( $i = 6; $i <= $season; $i++) {
+    for( $i = $season; $i >= 6; $i--) {
         $seasons[] = $i;
     }
 } else {
